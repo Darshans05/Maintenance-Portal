@@ -23,8 +23,8 @@ class WorkOrderItem {
       ktext: json['Ktext'] ?? '',
       werks: json['Werks'] ?? '',
       status: json['Status'] ?? '',
-      equipment: json['Equipment'] ?? '',
-      functionalLocation: json['Func_loc'] ?? '',
+      equipment: json['Equnr'] ?? json['Equipment'] ?? '',
+      functionalLocation: json['Tplnr'] ?? json['Func_loc'] ?? '',
       priority: json['Priokx'] ?? '',
     );
   }

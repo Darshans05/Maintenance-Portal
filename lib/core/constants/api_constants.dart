@@ -1,6 +1,7 @@
 class ApiConstants {
-  static const String baseUrl = 'http://AZKTLDS5CP.kcloud.com:8000/sap/opu/odata/SAP/ZG_MAINTPORTAL_DS_SRV';
+  static const String baseUrl = 'http://localhost:3000';
   
-  static const String notificationSet = '/Z_MAINTNOTIY_DSSet';
-  static const String workOrderSet = '/Z_MAINTWO_DSSet';
+  static const String notificationSet = '/notifications';
+  static const String workOrderSet = '/workorders';
+  static const String plantSet = '/plants';
 }

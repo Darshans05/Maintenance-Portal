@@ -45,12 +45,12 @@ class WorkOrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Plant: \${item.werks}',
+                    'Plant: ${item.werks}',
                     style: AppTextStyles.bodySecondary,
                   ),
                   if (item.equipment.isNotEmpty)
                     Text(
-                      'Equip: \${item.equipment}',
+                      'Equip: ${item.equipment}',
                       style: AppTextStyles.bodySecondary,
                     ),
                 ],

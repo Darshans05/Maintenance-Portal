@@ -5,6 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/notification_provider.dart';
 import 'providers/work_order_provider.dart';
+import 'providers/plant_provider.dart';
 
 import 'screens/login/login_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
@@ -25,6 +26,7 @@ void main() async {
         ChangeNotifierProvider.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => WorkOrderProvider()),
+        ChangeNotifierProvider(create: (_) => PlantProvider()),
       ],
       child: const MaintenancePortalApp(),
     ),

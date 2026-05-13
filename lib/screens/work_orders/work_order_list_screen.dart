@@ -31,54 +31,20 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
             return const Center(child: Text('No work orders found.'));
           }
 
-          // Extract unique priorities from the list dynamically
-          final uniquePriorities = provider.workOrders
-              .map((w) => w.priority)
-              .where((p) => p.isNotEmpty)
-              .toSet()
-              .toList()
-            ..sort();
-          
-          final dropdownItems = ['All', ...uniquePriorities];
-
-          // Filter the work orders based on selected priority
-          final filteredList = _selectedPriority == 'All'
-              ? provider.workOrders
-              : provider.workOrders
-                  .where((w) => w.priority == _selectedPriority)
-                  .toList();
+          final filteredList = provider.workOrders;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    const Text('Filter by Priority: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: dropdownItems.contains(_selectedPriority) ? _selectedPriority : 'All',
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedPriority = newValue;
-                            });
-                          }
-                        },
-                        items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Showing ${filteredList.length} work orders',
+                  style: const TextStyle(color: Color(0xFF666666), fontSize: 14),
                 ),
               ),
+              const SizedBox(height: 8),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async {

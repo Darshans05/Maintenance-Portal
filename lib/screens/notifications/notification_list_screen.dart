@@ -31,21 +31,24 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
             return const Center(child: Text('No notifications found.'));
           }
 
-          // Extract unique priorities from the list dynamically
-          final uniquePriorities = provider.notifications
-              .map((n) => n.priority)
-              .where((p) => p.isNotEmpty)
-              .toSet()
-              .toList()
-            ..sort();
+          // Parse and categorize priorities
+          final _getPriorityCategory = (String priority) {
+            if (priority.contains('1')) return 'High';
+            if (priority.contains('2')) return 'High';
+            if (priority.contains('3')) return 'Low';
+            return 'Low';
+          };
           
-          final dropdownItems = ['All', ...uniquePriorities];
-
-          // Filter the notifications based on selected priority
+          final filterOptions = ['All', 'High', 'Low'];
+          final counts = {
+            'All': provider.notifications.length,
+            'High': provider.notifications.where((n) => _getPriorityCategory(n.priority).contains('High')).length,
+            'Low': provider.notifications.where((n) => _getPriorityCategory(n.priority).contains('Low')).length,
+          };
           final filteredList = _selectedPriority == 'All'
               ? provider.notifications
               : provider.notifications
-                  .where((n) => n.priority == _selectedPriority)
+                  .where((n) => _getPriorityCategory(n.priority) == _selectedPriority)
                   .toList();
 
           return Column(
@@ -53,28 +56,50 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Filter by Priority: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: dropdownItems.contains(_selectedPriority) ? _selectedPriority : 'All',
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedPriority = newValue;
-                            });
-                          }
-                        },
-                        items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                    const Text('Filter by Priority:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 42,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: filterOptions.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 10),
+                        itemBuilder: (context, index) {
+                          final value = filterOptions[index];
+                          final count = counts[value] ?? 0;
+                          final isSelected = _selectedPriority == value;
+                          return OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 18),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              backgroundColor: isSelected ? Theme.of(context).primaryColor : Colors.white,
+                              side: BorderSide(
+                                color: isSelected ? Theme.of(context).primaryColor : const Color(0xFFDADADA),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _selectedPriority = value;
+                              });
+                            },
+                            child: Text(
+                              '$value ($count)',
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : const Color(0xFF333333),
+                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                              ),
+                            ),
                           );
-                        }).toList(),
+                        },
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Showing ${filteredList.length} of ${provider.notifications.length} notifications',
+                      style: const TextStyle(color: Color(0xFF666666)),
                     ),
                   ],
                 ),

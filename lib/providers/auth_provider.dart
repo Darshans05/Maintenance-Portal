@@ -15,6 +15,7 @@ class AuthProvider with ChangeNotifier {
   bool get isAuthenticated => _currentUser != null;
 
   Future<void> checkLoginStatus() async {
+    await _apiService.initAuth();
     final prefs = await SharedPreferences.getInstance();
     final empId = prefs.getString('empId');
     final name = prefs.getString('name');
@@ -54,6 +55,8 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('empId');
     await prefs.remove('name');
+    await prefs.remove('basicAuth');
+    _apiService.clearAuth();
     notifyListeners();
   }
 }
